@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolTrade Pro | Advanced Solana Trading Platform</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+    <style>
+        :root {
+            --primary: #00ffaa;
+            --primary-dark: #00cc88;
+            --secondary: #7b61ff;
+            --danger: #ff4d4d;
+            --success: #00ffaa;
+            --warning: #ffb74d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #6b6b6b;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #121212;
+            --bg-tertiary: #1a1a1a;
+            --border-primary: #252525;
+            --border-secondary: #333333;
+            --card-bg: rgba(30, 30, 30, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(18, 18, 18, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --positive: #00ffaa;
+            --negative: #ff4d4d;
+            --buy-gradient: linear-gradient(135deg, rgba(0, 255, 170, 0.15) 0%, rgba(0, 255, 170, 0) 100%);
+            --sell-gradient: linear-gradient(135deg, rgba(255, 77, 77, 0.15) 0%, rgba(255, 77, 77, 0) 100%);
+            --elevation-1: 0 4px 12px rgba(0, 0, 0, 0.25);
+            --elevation-2: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 340px;
+            grid-template-rows: 72px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border-primary);
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo img {
+            height: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            box-shadow: var(--elevation-1);
+        }
+
+        .nav-link .badge {
+            background: var(--primary);
+            color: var(--bg-primary);
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .connect-wallet {
+            background: var(--primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 255, 170, 0.3);
+        }
+
+        .connect-wallet:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .wallet-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-primary);
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Portfolio Card */
+        .portfolio-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--elevation-1);
+        }
+
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .portfolio-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .refresh-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            transform: rotate(180deg);
+        }
+
+        .portfolio-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .portfolio-subvalue {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid var(--border-primary);
+            transition: all 0.2s;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .positive {
+            color: var(--positive);
+        }
+
+        .negative {
+            color: var(--negative);
+        }
+
+        /* Trading Panel */
+        .trading-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--elevation-1);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .panel-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .panel-action-btn:hover {
+            color: var(--primary);
+            background: rgba(0, 255, 170, 0.1);
+        }
+
+        .amount-input-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-primary);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(0, 255, 170, 0.05);
+            box-shadow: 0 0 0 2px rgba(0, 255, 170, 0.1);
+        }
+
+        .input-label {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .input-sublabel {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            margin-left: 4px;
+        }
+
+        .trade-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .trade-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--elevation-1);
+        }
+
+        .buy-btn {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        .buy-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 170, 0.3);
+        }
+
+        .sell-btn {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .sell-btn:hover {
+            background: #e53935;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+        }
+
+        /* Advanced Trading Options */
+        .advanced-options {
+            margin-top: 16px;
+            border-top: 1px solid var(--border-primary);
+            padding-top: 16px;
+        }
+
+        .options-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .options-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .options-content {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .options-content.show {
+            display: block;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .option-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .option-value {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Main Chart Area */
+        .chart-container {
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .token-pair {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .token-symbol {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .token-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .price-change {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .price-change.positive {
+            background: rgba(0, 255, 170, 0.1);
+            color: var(--positive);
+        }
+
+        .price-change.negative {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--negative);
+        }
+
+        .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .indicator-select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .timeframe-selector {
+            display: flex;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .timeframe-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .timeframe-btn.active, .timeframe-btn:hover {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        .chart-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .toolbar-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover, .toolbar-btn.active {
+            color: var(--primary);
+            background: rgba(0, 255, 170, 0.1);
+        }
+
+        .chart-area {
+            flex: 1;
+            position: relative;
+            padding: 16px;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+        }
+
+        /* Order Book */
+        .orderbook {
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-primary);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .orderbook-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-primary);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .orderbook-view {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .view-btn.active {
+            background: var(--bg-primary);
+            color: var(--primary);
+        }
+
+        .orderbook-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .section-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 13px;
+            font-family: 'Roboto Mono', monospace;
+            align-items: center;
+        }
+
+        .order-row.header {
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-primary);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .order-row.ask {
+            color: var(--negative);
+        }
+
+        .order-row.bid {
+            color: var(--positive);
+        }
+
+        .depth-bar {
+            height: 4px;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .depth-bar.ask {
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .depth-bar.bid {
+            background: rgba(0, 255, 170, 0.1);
+        }
+
+        .depth-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+        }
+
+        .depth-fill.ask {
+            background: var(--negative);
+            right: 0;
+        }
+
+        .depth-fill.bid {
+            background: var(--positive);
+        }
+
+        .recent-trades {
+            border-top: 1px solid var(--border-primary);
+            padding-top: 16px;
+        }
+
+        .trade-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 12px;
+            font-family: 'Roboto Mono', monospace;
+            align-items: center;
+        }
+
+        .trade-row.buy {
+            color: var(--positive);
+        }
+
+        .trade-row.sell {
+            color: var(--negative);
+        }
+
+        /* Position Manager */
+        .position-manager {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--card-border);
+            margin-top: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .position-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .position-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .position-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .position-action {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .position-action:hover {
+            color: var(--primary);
+        }
+
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .position-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .position-direction {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .position-direction.long {
+            color: var(--positive);
+        }
+
+        .position-direction.short {
+            color: var(--negative);
+        }
+
+        .position-size {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .position-pnl {
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .position-pnl.positive {
+            color: var(--positive);
+        }
+
+        .position-pnl.negative {
+            color: var(--negative);
+        }
+
+        .close-position {
+            background: none;
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-position:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* PnL Display */
+        .pnl-display {
+            position: fixed;
+            top: 88px;
+            right: 360px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: var(--elevation-2);
+        }
+
+        .pnl-display.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pnl-value {
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .pnl-value.positive {
+            color: var(--positive);
+        }
+
+        .pnl-value.negative {
+            color: var(--negative);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s;
+            max-width: 320px;
+            box-shadow: var(--elevation-2);
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .notification-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .notification-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1440px) {
+            .app-container {
+                grid-template-columns: 280px 1fr 300px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 260px 1fr 280px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 72px auto auto 1fr;
+            }
+            
+            .sidebar, .orderbook {
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 16px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .chart-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes flashGreen {
+            0% { background: transparent; }
+            50% { background: rgba(0, 255, 170, 0.2); }
+            100% { background: transparent; }
+        }
+
+        @keyframes flashRed {
+            0% { background: transparent; }
+            50% { background: rgba(255, 77, 77, 0.2); }
+            100% { background: transparent; }
+        }
+
+        .price-flash {
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        .flash-green {
+            animation: flashGreen 1s ease-out;
+        }
+
+        .flash-red {
+            animation: flashRed 1s ease-out;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-secondary);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 12px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: var(--elevation-2);
+        }
+
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .tooltip-price {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tooltip-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .tooltip-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tooltip-stat {
+            font-size: 12px;
+        }
+
+        .tooltip-label {
+            color: var(--text-secondary);
+        }
+
+        .tooltip-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <img src="Untitled_Project-removebg-preview.png" alt="SolTrade Pro">
+
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6L9 3L15 6L21 3V18L15 21L9 18L3 21V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 3V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 6V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Trade
+                </a>
+                <a href="#" class="nav-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Portfolio
+                </a>
+                <a href="#" class="nav-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Learn
+                    <span class="badge">New</span>
+                </a>
+            </nav>
+            <div class="user-section">
+                <button class="connect-wallet" id="connectWalletBtn">
+                    <svg class="wallet-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 7H5C3.34315 7 2 8.34315 2 10V18C2 19.6569 3.34315 21 5 21H19C20.6569 21 22 19.6569 22 18V10C22 8.34315 20.6569 7 19 7H18ZM18 7V5C18 3.34315 16.6569 2 15 2H5C3.34315 2 2 3.34315 2 5V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M17 14C17 15.1046 16.1046 16 15 16C13.8954 16 13 15.1046 13 14C13 12.8954 13.8954 12 15 12C16.1046 12 17 12.8954 17 14Z" fill="currentColor"/>
+                    </svg>
+                    Connect Wallet
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="portfolio-card">
+                <div class="portfolio-header">
+                    <div class="portfolio-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Portfolio Value
+                    </div>
+                    <button class="refresh-btn" id="refreshPortfolio">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23 4V10H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M1 20V14H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.51 9C4.01717 7.56678 4.87913 6.2854 6.01547 5.27542C7.1518 4.26543 8.52547 3.55976 10.0083 3.22426C11.4911 2.88875 13.0348 2.93434 14.4952 3.35677C15.9556 3.77921 17.2853 4.56471 18.36 5.64L23 10M1 14L5.64 18.36C6.71475 19.4353 8.04437 20.2208 9.50481 20.6432C10.9652 21.0657 12.5089 21.1112 13.9917 20.7757C15.4745 20.4402 16.8482 19.7346 17.9845 18.7246C19.1209 17.7146 19.9828 16.4332 20.49 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="portfolio-value" id="totalBalance">15.42 SOL</div>
+                <div class="portfolio-subvalue">≈ $1,542.00</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">
+                            <span id="totalPnL">+2.42</span>
+                            <span>SOL</span>
+                        </div>
+                        <div class="stat-label">Total PnL (24h)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">
+                            <span id="winRate">72%</span>
+                        </div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">
+                            <span id="openTrades">3</span>
+                        </div>
+                        <div class="stat-label">Open Trades</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">
+                            <span id="totalTrades">24</span>
+                        </div>
+                        <div class="stat-label">Total Trades</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trading-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3V11H11V3H3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13 3V11H21V3H13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 13V21H11V13H3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13 13V21H21V13H13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Quick Trade
+                    </div>
+                    <div class="panel-actions">
+                        <button class="panel-action-btn" id="maxBtn">MAX</button>
+                        <button class="panel-action-btn" id="halfBtn">50%</button>
+                    </div>
+                </div>
+                
+                <div class="amount-input-container">
+                    <input type="number" class="amount-input" id="tradeAmount" placeholder="0.00" step="0.01" min="0.01">
+                    <span class="input-label">SOL</span>
+                </div>
+                <div class="input-sublabel">Available: <span id="availableBalance">15.42 SOL</span></div>
+                
+                <div class="trade-buttons">
+                    <button class="trade-btn buy-btn" onclick="executeTrade('buy')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        BUY LONG
+                    </button>
+                    <button class="trade-btn sell-btn" onclick="executeTrade('sell')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        SELL SHORT
+                    </button>
+                </div>
+
+                <div class="advanced-options">
+                    <div class="options-toggle" onclick="toggleOptions()">
+                        <div class="options-title">Advanced Options</div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="optionsArrow">
+                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="options-content" id="optionsContent">
+                        <div class="option-row">
+                            <div class="option-label">Slippage</div>
+                            <div class="option-value">0.5%</div>
+                        </div>
+                        <div class="option-row">
+                            <div class="option-label">Tx Speed</div>
+                            <div class="option-value">Fast</div>
+                        </div>
+                        <div class="option-row">
+                            <div class="option-label">Leverage</div>
+                            <div class="option-value">1x</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="position-manager">
+                <div class="position-header">
+                    <div class="position-title">Active Positions</div>
+                    <div class="position-actions">
+                        <button class="position-action">Close All</button>
+                    </div>
+                </div>
+                
+                <div class="position-item">
+                    <div class="position-info">
+                        <div class="position-direction long">LONG · SOL/PFUN</div>
+                        <div class="position-size">5.42 SOL @ $0.0048</div>
+                    </div>
+                    <div class="position-pnl positive">+0.24 SOL</div>
+                    <button class="close-position">Close</button>
+                </div>
+                
+                <div class="position-item">
+                    <div class="position-info">
+                        <div class="position-direction short">SHORT · SOL/BONK</div>
+                        <div class="position-size">3.20 SOL @ $0.000014</div>
+                    </div>
+                    <div class="position-pnl negative">-0.12 SOL</div>
+                    <button class="close-position">Close</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chart -->
+        <main class="chart-container">
+            <div class="chart-header">
+                <div class="token-info">
+                    <div class="token-pair">
+                        <img src="https://imgur.com/JQZq5yP.png" alt="SOL" class="token-icon">
+                        <span class="token-symbol">SOL/PFUN</span>
+                    </div>
+                    <div class="token-price" id="currentPrice">$0.0052</div>
+                    <div class="price-change positive" id="priceChange">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 12L12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        +4.25%
+                    </div>
+                </div>
+                <div class="chart-controls">
+                    <select class="indicator-select">
+                        <option>MACD</option>
+                        <option>RSI</option>
+                        <option>Volume</option>
+                    </select>
+                    <div class="timeframe-selector">
+                        <button class="timeframe-btn" onclick="setTimeframe('1m')">1m</button>
+                        <button class="timeframe-btn active" onclick="setTimeframe('5m')">5m</button>
+                        <button class="timeframe-btn" onclick="setTimeframe('15m')">15m</button>
+                        <button class="timeframe-btn" onclick="setTimeframe('1h')">1h</button>
+                        <button class="timeframe-btn" onclick="setTimeframe('4h')">4h</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-toolbar">
+                <button class="toolbar-btn active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6L9 3L15 6L21 3V18L15 21L9 18L3 21V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 3V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 6V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="toolbar-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3V11H11V3H3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13 3V11H21V3H13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 13V21H11V13H3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13 13V21H21V13H13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="toolbar-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="toolbar-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="chart-area">
+                <canvas class="chart-canvas" id="priceChart" width="800" height="400"></canvas>
+                <div class="tooltip" id="chartTooltip"></div>
+            </div>
+        </main>
+
+        <!-- Order Book -->
+        <aside class="orderbook">
+            <div class="orderbook-header">
+                <div>Order Book</div>
+                <div class="orderbook-view">
+                    <button class="view-btn active">Combined</button>
+                    <button class="view-btn">Asks</button>
+                    <button class="view-btn">Bids</button>
+                </div>
+            </div>
+            <div class="orderbook-content">
+                <div class="order-section">
+                    <div class="section-title">
+                        <span>Asks</span>
+                        <span class="section-value">$0.0054</span>
+                    </div>
+                    <div class="order-row header">
+                        <span>Price</span>
+                        <span>Size</span>
+                        <span>Total</span>
+                    </div>
+                    <div id="askOrders"></div>
+                </div>
+                
+                <div class="order-section">
+                    <div class="section-title">
+                        <span>Bids</span>
+                        <span class="section-value">$0.0050</span>
+                    </div>
+                    <div class="order-row header">
+                        <span>Price</span>
+                        <span>Size</span>
+                        <span>Total</span>
+                    </div>
+                    <div id="bidOrders"></div>
+                </div>
+
+                <div class="recent-trades">
+                    <div class="section-title">Recent Trades</div>
+                    <div class="order-row header">
+                        <span>Price</span>
+                        <span>Size</span>
+                        <span>Time</span>
+                    </div>
+                    <div id="recentTrades"></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- PnL Display -->
+    <div class="pnl-display" id="pnlDisplay">
+        <div>Unrealized PnL</div>
+        <div class="pnl-value positive" id="pnlValue">+0.24 SOL</div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-header">
+            <div class="notification-title">Trade Executed</div>
+            <button class="notification-close" id="closeNotification">×</button>
+        </div>
+        <div class="notification-body">
+            Successfully bought 5.42 SOL/PFUN at $0.0048
+        </div>
+    </div>
+
+<script>
+        // Trading State
+        let tradingState = {
+            balance: 15.42,
+            position: 5.42,
+            avgPrice: 0.0048,
+            totalPnL: 2.42,
+            trades: [],
+            currentPrice: 0.0052,
+            priceHistory: [],
+            marketCap: 5200000,
+            connectedWallet: false,
+            openTrades: 3,
+            totalTrades: 24,
+            winRate: 0.72
+        };
+
+        // DOM Elements
+        const chartCanvas = document.getElementById('priceChart');
+        const ctx = chartCanvas.getContext('2d');
+        const tooltip = document.getElementById('chartTooltip');
+        const notification = document.getElementById('notification');
+        const optionsContent = document.getElementById('optionsContent');
+        const optionsArrow = document.getElementById('optionsArrow');
+
+        // Initialize chart dimensions
+        chartCanvas.width = chartCanvas.offsetWidth;
+        chartCanvas.height = chartCanvas.offsetHeight;
+
+        // Generate initial candle data
+        function generateInitialCandles() {
+            let basePrice = 0.0048;
+            const candles = [];
+            
+            for (let i = 0; i < 100; i++) {
+                const open = basePrice;
+                const close = open * (1 + (Math.random() - 0.4) * 0.05); // More volatile
+                const high = Math.max(open, close) * (1 + Math.random() * 0.025);
+                const low = Math.min(open, close) * (1 - Math.random() * 0.025);
+                const volume = Math.random() * 3000 + 800;
+                
+                candles.push({
+                    open,
+                    high,
+                    low,
+                    close,
+                    volume,
+                    time: Date.now() - (100 - i) * 10000 // 10 second intervals for faster action
+                });
+                
+                basePrice = close;
+            }
+            
+            return candles;
+        }
+
+        tradingState.priceHistory = generateInitialCandles();
+
+        // Update price simulation - MUCH FASTER AND MORE VOLATILE
+        function updatePrice() {
+            const lastCandle = tradingState.priceHistory[tradingState.priceHistory.length - 1];
+            const basePrice = lastCandle.close;
+            
+            // Super volatile price movement with strong momentum
+            const randomChange = (Math.random() - 0.45) * 0.08; // Much more volatile
+            const momentum = (lastCandle.close - lastCandle.open) * 0.8; // Stronger momentum
+            const volatilitySpike = Math.random() < 0.1 ? (Math.random() - 0.5) * 0.15 : 0; // 10% chance of major spike
+            const newClose = basePrice * (1 + randomChange + momentum + volatilitySpike);
+            
+            // Ensure price doesn't go below $0.0005
+            const adjustedClose = Math.max(0.0005, newClose);
+            const newOpen = lastCandle.close;
+            const newHigh = Math.max(newOpen, adjustedClose) * (1 + Math.random() * 0.03);
+            const newLow = Math.min(newOpen, adjustedClose) * (1 - Math.random() * 0.03);
+            const newVolume = Math.random() * 5000 + 1000;
+            
+            // Add new candle
+            tradingState.priceHistory.push({
+                open: newOpen,
+                high: newHigh,
+                low: newLow,
+                close: adjustedClose,
+                volume: newVolume,
+                time: Date.now()
+            });
+            
+            // Update current price
+            tradingState.currentPrice = adjustedClose;
+            
+            // Update market cap with more dramatic swings
+            tradingState.marketCap = tradingState.currentPrice * 1000000000;
+            
+            // Keep only last 100 data points
+            if (tradingState.priceHistory.length > 100) {
+                tradingState.priceHistory.shift();
+            }
+            
+            updateUI();
+            drawChart();
+            updateOrderBook();
+        }
+
+        // Rapid price tick updates - multiple mini updates between candles
+        function rapidPriceTick() {
+            const lastCandle = tradingState.priceHistory[tradingState.priceHistory.length - 1];
+            
+            // Quick price fluctuations
+            const microChange = (Math.random() - 0.5) * 0.02;
+            const newPrice = Math.max(0.0005, tradingState.currentPrice * (1 + microChange));
+            
+            tradingState.currentPrice = newPrice;
+            
+            // Update only essential UI elements for performance
+            const priceElement = document.getElementById('currentPrice');
+            const changeElement = document.getElementById('priceChange');
+            
+            // Update price with flash animation
+            priceElement.textContent = `$${tradingState.currentPrice.toFixed(6)}`;
+            priceElement.classList.add('price-flash');
+            setTimeout(() => priceElement.classList.remove('price-flash'), 100);
+            
+            // Calculate and display rapid price changes
+            const change = ((tradingState.currentPrice - lastCandle.close) / lastCandle.close) * 100;
+            changeElement.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="${change >= 0 ? 'M12 19V5M5 12L12 5L19 12' : 'M12 5V19M5 12L12 19L19 12'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                ${Math.abs(change).toFixed(3)}%
+            `;
+            
+            changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+            
+            // Add some visual excitement with occasional big moves
+            if (Math.abs(change) > 2) {
+                priceElement.style.fontSize = '1.1em';
+                setTimeout(() => {
+                    priceElement.style.fontSize = '';
+                }, 200);
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            const priceElement = document.getElementById('currentPrice');
+            const changeElement = document.getElementById('priceChange');
+            const balanceElement = document.getElementById('totalBalance');
+            const pnlElement = document.getElementById('totalPnL');
+            
+            // Update price with intense animation
+            priceElement.textContent = `$${tradingState.currentPrice.toFixed(6)}`;
+            priceElement.classList.add('price-flash');
+            setTimeout(() => priceElement.classList.remove('price-flash'), 200);
+            
+            // Calculate price change with more precision
+            if (tradingState.priceHistory.length > 1) {
+                const prevClose = tradingState.priceHistory[tradingState.priceHistory.length - 2].close;
+                const change = ((tradingState.currentPrice - prevClose) / prevClose) * 100;
+                
+                changeElement.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="${change >= 0 ? 'M12 19V5M5 12L12 5L19 12' : 'M12 5V19M5 12L12 19L19 12'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    ${Math.abs(change).toFixed(3)}%
+                `;
+                
+                changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+            }
+            
+            // Update balance
+            balanceElement.textContent = `${tradingState.balance.toFixed(2)} SOL`;
+            document.getElementById('availableBalance').textContent = `${tradingState.balance.toFixed(2)} SOL`;
+            
+            // Update PnL with real-time calculations
+            const unrealizedPnL = tradingState.position * (tradingState.currentPrice - tradingState.avgPrice);
+            const totalPnL = tradingState.totalPnL + unrealizedPnL;
+            pnlElement.innerHTML = `${totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)} <span>SOL</span>`;
+            
+            // Update PnL display if position exists
+            if (tradingState.position !== 0) {
+                const pnlDisplay = document.getElementById('pnlDisplay');
+                const pnlValue = document.getElementById('pnlValue');
+                pnlValue.textContent = `${unrealizedPnL >= 0 ? '+' : ''}${unrealizedPnL.toFixed(4)} SOL`;
+                pnlValue.className = `pnl-value ${unrealizedPnL >= 0 ? 'positive' : 'negative'}`;
+                pnlDisplay.classList.add('show');
+            } else {
+                document.getElementById('pnlDisplay').classList.remove('show');
+            }
+        }
+
+        // Draw the price chart - Optimized for performance
+        function drawChart() {
+            ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+            
+            if (tradingState.priceHistory.length < 2) return;
+            
+            const prices = tradingState.priceHistory.map(p => p.high);
+            const minPrice = Math.min(...tradingState.priceHistory.map(p => p.low));
+            const maxPrice = Math.max(...prices);
+            const priceRange = maxPrice - minPrice;
+            const padding = 0.1 * priceRange;
+            const adjustedMin = minPrice - padding;
+            const adjustedMax = maxPrice + padding;
+            const adjustedRange = adjustedMax - adjustedMin;
+            
+            // Draw grid (lighter for better performance)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            
+            // Reduced grid lines for performance
+            for (let i = 0; i < 5; i++) {
+                const y = (chartCanvas.height / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(chartCanvas.width, y);
+                ctx.stroke();
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                const x = (chartCanvas.width / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, chartCanvas.height);
+                ctx.stroke();
+            }
+            
+            // Draw volume bars (simplified for performance)
+            const maxVolume = Math.max(...tradingState.priceHistory.map(c => c.volume));
+            tradingState.priceHistory.forEach((candle, index) => {
+                const x = (chartCanvas.width / tradingState.priceHistory.length) * index;
+                const width = chartCanvas.width / tradingState.priceHistory.length;
+                const volumeHeight = (candle.volume / maxVolume) * (chartCanvas.height * 0.15);
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+                ctx.fillRect(x, chartCanvas.height - volumeHeight, width, volumeHeight);
+            });
+            
+            // Draw candlesticks with enhanced colors
+            const candleWidth = chartCanvas.width / tradingState.priceHistory.length * 0.8;
+            const candleGap = chartCanvas.width / tradingState.priceHistory.length * 0.2;
+            
+            tradingState.priceHistory.forEach((candle, index) => {
+                const x = (chartCanvas.width / tradingState.priceHistory.length) * index + candleGap/2;
+                
+                // Calculate candle coordinates
+                const openY = chartCanvas.height - ((candle.open - adjustedMin) / adjustedRange) * chartCanvas.height;
+                const closeY = chartCanvas.height - ((candle.close - adjustedMin) / adjustedRange) * chartCanvas.height;
+                const highY = chartCanvas.height - ((candle.high - adjustedMin) / adjustedRange) * chartCanvas.height;
+                const lowY = chartCanvas.height - ((candle.low - adjustedMin) / adjustedRange) * chartCanvas.height;
+                
+                // Determine candle color with intensity based on movement
+                const isBullish = candle.close > candle.open;
+                const intensity = Math.abs(candle.close - candle.open) / candle.open;
+                const alpha = Math.min(0.9, 0.4 + intensity * 10); // More dramatic moves = more intense colors
+                
+                ctx.fillStyle = isBullish ? `rgba(0, 255, 170, ${alpha})` : `rgba(255, 77, 77, ${alpha})`;
+                ctx.strokeStyle = isBullish ? 'rgba(0, 255, 170, 1)' : 'rgba(255, 77, 77, 1)';
+                
+                // Draw candle wick
+                ctx.beginPath();
+                ctx.moveTo(x + candleWidth/2, highY);
+                ctx.lineTo(x + candleWidth/2, lowY);
+                ctx.stroke();
+                
+                // Draw candle body
+                const bodyTop = Math.min(openY, closeY);
+                const bodyHeight = Math.abs(openY - closeY);
+                ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
+                ctx.strokeRect(x, bodyTop, candleWidth, bodyHeight);
+            });
+            
+            // Draw current price line with pulse effect
+            const currentPriceY = chartCanvas.height - ((tradingState.currentPrice - adjustedMin) / adjustedRange) * chartCanvas.height;
+            const pulseAlpha = 0.2 + Math.sin(Date.now() / 200) * 0.1;
+            ctx.strokeStyle = `rgba(0, 255, 170, ${pulseAlpha})`;
+            ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, currentPriceY);
+            ctx.lineTo(chartCanvas.width, currentPriceY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.lineWidth = 1;
+            
+            // Add chart interaction
+            setupChartInteraction();
+        }
+
+        // Setup chart mouse interactions
+        function setupChartInteraction() {
+            let mouseX = -1;
+            let mouseY = -1;
+            
+            chartCanvas.addEventListener('mousemove', (e) => {
+                const rect = chartCanvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+                
+                // Find the closest candle
+                const candleIndex = Math.floor((mouseX / chartCanvas.width) * tradingState.priceHistory.length);
+                const candle = tradingState.priceHistory[candleIndex];
+                
+                if (candle) {
+                    const minPrice = Math.min(...tradingState.priceHistory.map(p => p.low));
+                    const maxPrice = Math.max(...tradingState.priceHistory.map(p => p.high));
+                    const priceRange = maxPrice - minPrice;
+                    const padding = 0.1 * priceRange;
+                    const adjustedMin = minPrice - padding;
+                    const adjustedMax = maxPrice + padding;
+                    const adjustedRange = adjustedMax - adjustedMin;
+                    
+                    const candleX = (candleIndex / tradingState.priceHistory.length) * chartCanvas.width;
+                    const candleY = chartCanvas.height - ((candle.close - adjustedMin) / adjustedRange) * chartCanvas.height;
+                    
+                    // Show tooltip
+                    tooltip.style.left = `${candleX + 20}px`;
+                    tooltip.style.top = `${candleY - 20}px`;
+                    tooltip.style.opacity = '1';
+                    
+                    const date = new Date(candle.time);
+                    const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                    const dateStr = date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+                    
+                    tooltip.innerHTML = `
+                        <div class="tooltip-header">
+                            <span>${dateStr}</span>
+                            <span>${timeStr}</span>
+                        </div>
+                        <div class="tooltip-price">$${candle.close.toFixed(6)}</div>
+                        <div class="tooltip-date">SOL/PFUN</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <div class="tooltip-label">Open</div>
+                                <div class="tooltip-value">$${candle.open.toFixed(6)}</div>
+                            </div>
+                            <div class="tooltip-stat">
+                                <div class="tooltip-label">High</div>
+                                <div class="tooltip-value">$${candle.high.toFixed(6)}</div>
+                            </div>
+                            <div class="tooltip-stat">
+                                <div class="tooltip-label">Low</div>
+                                <div class="tooltip-value">$${candle.low.toFixed(6)}</div>
+                            </div>
+                            <div class="tooltip-stat">
+                                <div class="tooltip-label">Volume</div>
+                                <div class="tooltip-value">${Math.floor(candle.volume)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            chartCanvas.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        }
+
+        // Update order book with faster changes
+        function updateOrderBook() {
+            const askOrders = document.getElementById('askOrders');
+            const bidOrders = document.getElementById('bidOrders');
+            const recentTrades = document.getElementById('recentTrades');
+            
+            // Generate fake order book data with more volatility
+            askOrders.innerHTML = '';
+            bidOrders.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const askPrice = tradingState.currentPrice * (1 + (i + 1) * 0.002);
+                const bidPrice = tradingState.currentPrice * (1 - (i + 1) * 0.002);
+                const size = Math.random() * 2000 + 300;
+                const depth = Math.random() * 100;
+                
+                askOrders.innerHTML += `
+                    <div class="order-row ask">
+                        <span>${askPrice.toFixed(6)}</span>
+                        <span>${size.toFixed(0)}</span>
+                        <span>${(askPrice * size).toFixed(2)}</span>
+                        <div class="depth-bar ask">
+                            <div class="depth-fill ask" style="width: ${depth}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                bidOrders.innerHTML += `
+                    <div class="order-row bid">
+                        <span>${bidPrice.toFixed(6)}</span>
+                        <span>${size.toFixed(0)}</span>
+                        <span>${(bidPrice * size).toFixed(2)}</span>
+                        <div class="depth-bar bid">
+                            <div class="depth-fill bid" style="width: ${depth}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update recent trades with higher frequency
+            if (Math.random() < 0.7) { // 70% chance to add new trade
+                const tradeType = Math.random() > 0.5 ? 'buy' : 'sell';
+                const tradeSize = Math.random() * 1200 + 200;
+                const tradeTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                
+                const newTrade = `
+                    <div class="trade-row ${tradeType}">
+                        <span>${tradingState.currentPrice.toFixed(6)}</span>
+                        <span>${tradeSize.toFixed(0)}</span>
+                        <span>${tradeTime}</span>
+                    </div>
+                `;
+                
+                recentTrades.innerHTML = newTrade + recentTrades.innerHTML;
+                
+                // Keep only last 15 trades for more activity
+                const trades = recentTrades.querySelectorAll('.trade-row');
+                if (trades.length > 15) {
+                    trades[trades.length - 1].remove();
+                }
+            }
+        }
+
+        // Execute trade
+        function executeTrade(type) {
+            const amountInput = document.getElementById('tradeAmount');
+            const amount = parseFloat(amountInput.value);
+            
+            if (!amount || amount <= 0) {
+                showNotification('error', 'Please enter a valid amount');
+                return;
+            }
+            
+            if (type === 'buy') {
+                const cost = amount;
+                if (cost > tradingState.balance) {
+                    showNotification('error', 'Insufficient balance');
+                    return;
+                }
+                
+                const tokens = cost / tradingState.currentPrice;
+                tradingState.balance -= cost;
+                
+                // Update position
+                if (tradingState.position >= 0) {
+                    tradingState.avgPrice = ((tradingState.position * tradingState.avgPrice) + (tokens * tradingState.currentPrice)) / (tradingState.position + tokens);
+                    tradingState.position += tokens;
+                } else {
+                    // Closing short position
+                    if (tokens >= Math.abs(tradingState.position)) {
+                        const pnl = Math.abs(tradingState.position) * (tradingState.avgPrice - tradingState.currentPrice);
+                        tradingState.totalPnL += pnl;
+                        tradingState.trades.push({ type: 'close_short', pnl: pnl, price: tradingState.currentPrice });
+                        
+                        const remainingTokens = tokens - Math.abs(tradingState.position);
+                        tradingState.position = remainingTokens;
+                        tradingState.avgPrice = tradingState.currentPrice;
+                    } else {
+                        tradingState.position += tokens;
+                    }
+                }
+                
+                showNotification('success', `Successfully bought ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
+                
+            } else if (type === 'sell') {
+                const tokens = amount / tradingState.currentPrice;
+                
+                if (tradingState.position > 0) {
+                    if (tokens > tradingState.position) {
+                        showNotification('error', 'Insufficient position');
+                        return;
+                    }
+                    
+                    const pnl = tokens * (tradingState.currentPrice - tradingState.avgPrice);
+                    tradingState.totalPnL += pnl;
+                    tradingState.balance += amount;
+                    tradingState.position -= tokens;
+                    tradingState.trades.push({ type: 'sell', pnl: pnl, price: tradingState.currentPrice });
+                    
+                    if (tradingState.position === 0) {
+                        tradingState.avgPrice = 0;
+                    }
+                    
+                    showNotification('success', `Successfully sold ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
+                } else {
+                    // Short selling
+                    tradingState.balance += amount;
+                    if (tradingState.position <= 0) {
+                        tradingState.avgPrice = ((Math.abs(tradingState.position) * tradingState.avgPrice) + (tokens * tradingState.currentPrice)) / (Math.abs(tradingState.position) + tokens);
+                        tradingState.position -= tokens;
+                    } else {
+                        const pnl = tradingState.position * (tradingState.currentPrice - tradingState.avgPrice);
+                        tradingState.totalPnL += pnl;
+                        tradingState.trades.push({ type: 'close_long', pnl: pnl, price: tradingState.currentPrice });
+                        
+                        const remainingTokens = tokens - tradingState.position;
+                        tradingState.position = -remainingTokens;
+                        tradingState.avgPrice = tradingState.currentPrice;
+                    }
+                    
+                    showNotification('success', `Successfully shorted ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
+                }
+            }
+            
+            // Update trade stats
+            tradingState.openTrades = tradingState.position !== 0 ? 1 : 0;
+            tradingState.totalTrades++;
+            tradingState.winRate = tradingState.trades.length > 0 ? 
+                (tradingState.trades.filter(t => t.pnl > 0).length / tradingState.trades.length) : 0;
+            
+            amountInput.value = '';
+            updateUI();
+        }
+
+        // Show notification
+        function showNotification(type, message) {
+            notification.className = `notification ${type}`;
+            notification.querySelector('.notification-body').textContent = message;
+            notification.querySelector('.notification-title').textContent = 
+                type === 'success' ? 'Trade Executed' : 'Trade Failed';
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Toggle advanced options
+        function toggleOptions() {
+            optionsContent.classList.toggle('show');
+            optionsArrow.style.transform = optionsContent.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+        }
+
+        // Set timeframe
+        function setTimeframe(timeframe) {
+            // Update active timeframe button
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // In a real implementation, this would change the chart data
+            console.log(`Timeframe changed to: ${timeframe}`);
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const response = await window.solana.connect();
+                    const publicKey = response.publicKey.toString();
+                    
+                    tradingState.connectedWallet = true;
+                    document.getElementById('connectWalletBtn').textContent = `${publicKey.substring(0, 4)}...${publicKey.substring(publicKey.length - 4)}`;
+                    
+                    showNotification('success', 'Wallet connected successfully');
+                } catch (err) {
+                    showNotification('error', 'Wallet connection failed');
+                    console.error('Wallet connection error:', err);
+                }
+            } else {
+                showNotification('error', 'Phantom wallet not found! Please install it from https://phantom.app/');
+            }
+        }
+
+        // Initialize the app
+        function init() {
+            updateUI();
+            drawChart();
+            updateOrderBook();
+            
+            // Event listeners
+            document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+            document.getElementById('closeNotification').addEventListener('click', () => {
+                notification.classList.remove('show');
+            });
+            document.getElementById('maxBtn').addEventListener('click', () => {
+                document.getElementById('tradeAmount').value = tradingState.balance.toFixed(2);
+            });
+            document.getElementById('halfBtn').addEventListener('click', () => {
+                document.getElementById('tradeAmount').value = (tradingState.balance / 2).toFixed(2);
+            });
+            
+            // ULTRA FAST UPDATES!
+            setInterval(rapidPriceTick, 100); // Super fast price ticks every 100ms
+            setInterval(updatePrice, 500);    // New candles every 500ms  
+            setInterval(updateOrderBook, 300); // Order book updates every 300ms
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                chartCanvas.width = chartCanvas.offsetWidth;
+                chartCanvas.height = chartCanvas.offsetHeight;
+                drawChart();
+            });
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
