@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolTrade Pro | Advanced Solana Trading Platform</title>
+    <title>Trenches Szn | Advanced Solana Trading Platform</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
     <style>
         :root {
@@ -76,11 +76,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 700;
-            font-size: 18px;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 1px;
             background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-family: 'Roboto Mono', monospace;
         }
 
         .logo img {
@@ -1102,8 +1104,8 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <img src="Untitled_Project-removebg-preview.png" alt="SolTrade Pro">
-
+                <img src="Untitled_Project-removebg-preview.png" alt="Trenches Szn">
+                TRENCH/SZN
             </div>
             <nav class="nav-links">
                 <a href="#" class="nav-link active">
@@ -1476,25 +1478,22 @@
 
         tradingState.priceHistory = generateInitialCandles();
 
-        // Update price simulation - MUCH FASTER AND MORE VOLATILE
+        // Update price simulation
         function updatePrice() {
             const lastCandle = tradingState.priceHistory[tradingState.priceHistory.length - 1];
             const basePrice = lastCandle.close;
             
-            // Super volatile price movement with strong momentum
-            const randomChange = (Math.random() - 0.45) * 0.08; // Much more volatile
-            const momentum = (lastCandle.close - lastCandle.open) * 0.8; // Stronger momentum
-            const volatilitySpike = Math.random() < 0.1 ? (Math.random() - 0.5) * 0.15 : 0; // 10% chance of major spike
+            const randomChange = (Math.random() - 0.45) * 0.08; 
+            const momentum = (lastCandle.close - lastCandle.open) * 0.8; 
+            const volatilitySpike = Math.random() < 0.1 ? (Math.random() - 0.5) * 0.15 : 0; 
             const newClose = basePrice * (1 + randomChange + momentum + volatilitySpike);
             
-            // Ensure price doesn't go below $0.0005
             const adjustedClose = Math.max(0.0005, newClose);
             const newOpen = lastCandle.close;
             const newHigh = Math.max(newOpen, adjustedClose) * (1 + Math.random() * 0.03);
             const newLow = Math.min(newOpen, adjustedClose) * (1 - Math.random() * 0.03);
             const newVolume = Math.random() * 5000 + 1000;
             
-            // Add new candle
             tradingState.priceHistory.push({
                 open: newOpen,
                 high: newHigh,
@@ -1504,13 +1503,9 @@
                 time: Date.now()
             });
             
-            // Update current price
             tradingState.currentPrice = adjustedClose;
-            
-            // Update market cap with more dramatic swings
             tradingState.marketCap = tradingState.currentPrice * 1000000000;
             
-            // Keep only last 100 data points
             if (tradingState.priceHistory.length > 100) {
                 tradingState.priceHistory.shift();
             }
@@ -1520,26 +1515,20 @@
             updateOrderBook();
         }
 
-        // Rapid price tick updates - multiple mini updates between candles
         function rapidPriceTick() {
             const lastCandle = tradingState.priceHistory[tradingState.priceHistory.length - 1];
-            
-            // Quick price fluctuations
             const microChange = (Math.random() - 0.5) * 0.02;
             const newPrice = Math.max(0.0005, tradingState.currentPrice * (1 + microChange));
             
             tradingState.currentPrice = newPrice;
             
-            // Update only essential UI elements for performance
             const priceElement = document.getElementById('currentPrice');
             const changeElement = document.getElementById('priceChange');
             
-            // Update price with flash animation
             priceElement.textContent = `$${tradingState.currentPrice.toFixed(6)}`;
             priceElement.classList.add('price-flash');
             setTimeout(() => priceElement.classList.remove('price-flash'), 100);
             
-            // Calculate and display rapid price changes
             const change = ((tradingState.currentPrice - lastCandle.close) / lastCandle.close) * 100;
             changeElement.innerHTML = `
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1549,29 +1538,16 @@
             `;
             
             changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
-            
-            // Add some visual excitement with occasional big moves
-            if (Math.abs(change) > 2) {
-                priceElement.style.fontSize = '1.1em';
-                setTimeout(() => {
-                    priceElement.style.fontSize = '';
-                }, 200);
-            }
         }
 
-        // Update UI elements
         function updateUI() {
             const priceElement = document.getElementById('currentPrice');
             const changeElement = document.getElementById('priceChange');
             const balanceElement = document.getElementById('totalBalance');
             const pnlElement = document.getElementById('totalPnL');
             
-            // Update price with intense animation
             priceElement.textContent = `$${tradingState.currentPrice.toFixed(6)}`;
-            priceElement.classList.add('price-flash');
-            setTimeout(() => priceElement.classList.remove('price-flash'), 200);
             
-            // Calculate price change with more precision
             if (tradingState.priceHistory.length > 1) {
                 const prevClose = tradingState.priceHistory[tradingState.priceHistory.length - 2].close;
                 const change = ((tradingState.currentPrice - prevClose) / prevClose) * 100;
@@ -1586,16 +1562,13 @@
                 changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
             }
             
-            // Update balance
             balanceElement.textContent = `${tradingState.balance.toFixed(2)} SOL`;
             document.getElementById('availableBalance').textContent = `${tradingState.balance.toFixed(2)} SOL`;
             
-            // Update PnL with real-time calculations
             const unrealizedPnL = tradingState.position * (tradingState.currentPrice - tradingState.avgPrice);
             const totalPnL = tradingState.totalPnL + unrealizedPnL;
             pnlElement.innerHTML = `${totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)} <span>SOL</span>`;
             
-            // Update PnL display if position exists
             if (tradingState.position !== 0) {
                 const pnlDisplay = document.getElementById('pnlDisplay');
                 const pnlValue = document.getElementById('pnlValue');
@@ -1607,7 +1580,6 @@
             }
         }
 
-        // Draw the price chart - Optimized for performance
         function drawChart() {
             ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
             
@@ -1622,165 +1594,48 @@
             const adjustedMax = maxPrice + padding;
             const adjustedRange = adjustedMax - adjustedMin;
             
-            // Draw grid (lighter for better performance)
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
             ctx.lineWidth = 1;
             
-            // Reduced grid lines for performance
             for (let i = 0; i < 5; i++) {
                 const y = (chartCanvas.height / 5) * i;
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(chartCanvas.width, y);
-                ctx.stroke();
-            }
-            
-            for (let i = 0; i < 5; i++) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(chartCanvas.width, y); ctx.stroke();
                 const x = (chartCanvas.width / 5) * i;
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, chartCanvas.height);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, chartCanvas.height); ctx.stroke();
             }
             
-            // Draw volume bars (simplified for performance)
-            const maxVolume = Math.max(...tradingState.priceHistory.map(c => c.volume));
-            tradingState.priceHistory.forEach((candle, index) => {
-                const x = (chartCanvas.width / tradingState.priceHistory.length) * index;
-                const width = chartCanvas.width / tradingState.priceHistory.length;
-                const volumeHeight = (candle.volume / maxVolume) * (chartCanvas.height * 0.15);
-                
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
-                ctx.fillRect(x, chartCanvas.height - volumeHeight, width, volumeHeight);
-            });
-            
-            // Draw candlesticks with enhanced colors
             const candleWidth = chartCanvas.width / tradingState.priceHistory.length * 0.8;
             const candleGap = chartCanvas.width / tradingState.priceHistory.length * 0.2;
             
             tradingState.priceHistory.forEach((candle, index) => {
                 const x = (chartCanvas.width / tradingState.priceHistory.length) * index + candleGap/2;
-                
-                // Calculate candle coordinates
                 const openY = chartCanvas.height - ((candle.open - adjustedMin) / adjustedRange) * chartCanvas.height;
                 const closeY = chartCanvas.height - ((candle.close - adjustedMin) / adjustedRange) * chartCanvas.height;
                 const highY = chartCanvas.height - ((candle.high - adjustedMin) / adjustedRange) * chartCanvas.height;
                 const lowY = chartCanvas.height - ((candle.low - adjustedMin) / adjustedRange) * chartCanvas.height;
                 
-                // Determine candle color with intensity based on movement
                 const isBullish = candle.close > candle.open;
-                const intensity = Math.abs(candle.close - candle.open) / candle.open;
-                const alpha = Math.min(0.9, 0.4 + intensity * 10); // More dramatic moves = more intense colors
+                const alpha = 0.8;
                 
                 ctx.fillStyle = isBullish ? `rgba(0, 255, 170, ${alpha})` : `rgba(255, 77, 77, ${alpha})`;
                 ctx.strokeStyle = isBullish ? 'rgba(0, 255, 170, 1)' : 'rgba(255, 77, 77, 1)';
                 
-                // Draw candle wick
                 ctx.beginPath();
                 ctx.moveTo(x + candleWidth/2, highY);
                 ctx.lineTo(x + candleWidth/2, lowY);
                 ctx.stroke();
                 
-                // Draw candle body
                 const bodyTop = Math.min(openY, closeY);
                 const bodyHeight = Math.abs(openY - closeY);
                 ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
-                ctx.strokeRect(x, bodyTop, candleWidth, bodyHeight);
-            });
-            
-            // Draw current price line with pulse effect
-            const currentPriceY = chartCanvas.height - ((tradingState.currentPrice - adjustedMin) / adjustedRange) * chartCanvas.height;
-            const pulseAlpha = 0.2 + Math.sin(Date.now() / 200) * 0.1;
-            ctx.strokeStyle = `rgba(0, 255, 170, ${pulseAlpha})`;
-            ctx.setLineDash([3, 3]);
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, currentPriceY);
-            ctx.lineTo(chartCanvas.width, currentPriceY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.lineWidth = 1;
-            
-            // Add chart interaction
-            setupChartInteraction();
-        }
-
-        // Setup chart mouse interactions
-        function setupChartInteraction() {
-            let mouseX = -1;
-            let mouseY = -1;
-            
-            chartCanvas.addEventListener('mousemove', (e) => {
-                const rect = chartCanvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-                
-                // Find the closest candle
-                const candleIndex = Math.floor((mouseX / chartCanvas.width) * tradingState.priceHistory.length);
-                const candle = tradingState.priceHistory[candleIndex];
-                
-                if (candle) {
-                    const minPrice = Math.min(...tradingState.priceHistory.map(p => p.low));
-                    const maxPrice = Math.max(...tradingState.priceHistory.map(p => p.high));
-                    const priceRange = maxPrice - minPrice;
-                    const padding = 0.1 * priceRange;
-                    const adjustedMin = minPrice - padding;
-                    const adjustedMax = maxPrice + padding;
-                    const adjustedRange = adjustedMax - adjustedMin;
-                    
-                    const candleX = (candleIndex / tradingState.priceHistory.length) * chartCanvas.width;
-                    const candleY = chartCanvas.height - ((candle.close - adjustedMin) / adjustedRange) * chartCanvas.height;
-                    
-                    // Show tooltip
-                    tooltip.style.left = `${candleX + 20}px`;
-                    tooltip.style.top = `${candleY - 20}px`;
-                    tooltip.style.opacity = '1';
-                    
-                    const date = new Date(candle.time);
-                    const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-                    const dateStr = date.toLocaleDateString([], {month: 'short', day: 'numeric'});
-                    
-                    tooltip.innerHTML = `
-                        <div class="tooltip-header">
-                            <span>${dateStr}</span>
-                            <span>${timeStr}</span>
-                        </div>
-                        <div class="tooltip-price">$${candle.close.toFixed(6)}</div>
-                        <div class="tooltip-date">SOL/PFUN</div>
-                        <div class="tooltip-stats">
-                            <div class="tooltip-stat">
-                                <div class="tooltip-label">Open</div>
-                                <div class="tooltip-value">$${candle.open.toFixed(6)}</div>
-                            </div>
-                            <div class="tooltip-stat">
-                                <div class="tooltip-label">High</div>
-                                <div class="tooltip-value">$${candle.high.toFixed(6)}</div>
-                            </div>
-                            <div class="tooltip-stat">
-                                <div class="tooltip-label">Low</div>
-                                <div class="tooltip-value">$${candle.low.toFixed(6)}</div>
-                            </div>
-                            <div class="tooltip-stat">
-                                <div class="tooltip-label">Volume</div>
-                                <div class="tooltip-value">${Math.floor(candle.volume)}</div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            
-            chartCanvas.addEventListener('mouseleave', () => {
-                tooltip.style.opacity = '0';
             });
         }
 
-        // Update order book with faster changes
         function updateOrderBook() {
             const askOrders = document.getElementById('askOrders');
             const bidOrders = document.getElementById('bidOrders');
             const recentTrades = document.getElementById('recentTrades');
             
-            // Generate fake order book data with more volatility
             askOrders.innerHTML = '';
             bidOrders.innerHTML = '';
             
@@ -1788,230 +1643,44 @@
                 const askPrice = tradingState.currentPrice * (1 + (i + 1) * 0.002);
                 const bidPrice = tradingState.currentPrice * (1 - (i + 1) * 0.002);
                 const size = Math.random() * 2000 + 300;
-                const depth = Math.random() * 100;
                 
-                askOrders.innerHTML += `
-                    <div class="order-row ask">
-                        <span>${askPrice.toFixed(6)}</span>
-                        <span>${size.toFixed(0)}</span>
-                        <span>${(askPrice * size).toFixed(2)}</span>
-                        <div class="depth-bar ask">
-                            <div class="depth-fill ask" style="width: ${depth}%"></div>
-                        </div>
-                    </div>
-                `;
-                
-                bidOrders.innerHTML += `
-                    <div class="order-row bid">
-                        <span>${bidPrice.toFixed(6)}</span>
-                        <span>${size.toFixed(0)}</span>
-                        <span>${(bidPrice * size).toFixed(2)}</span>
-                        <div class="depth-bar bid">
-                            <div class="depth-fill bid" style="width: ${depth}%"></div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Update recent trades with higher frequency
-            if (Math.random() < 0.7) { // 70% chance to add new trade
-                const tradeType = Math.random() > 0.5 ? 'buy' : 'sell';
-                const tradeSize = Math.random() * 1200 + 200;
-                const tradeTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-                
-                const newTrade = `
-                    <div class="trade-row ${tradeType}">
-                        <span>${tradingState.currentPrice.toFixed(6)}</span>
-                        <span>${tradeSize.toFixed(0)}</span>
-                        <span>${tradeTime}</span>
-                    </div>
-                `;
-                
-                recentTrades.innerHTML = newTrade + recentTrades.innerHTML;
-                
-                // Keep only last 15 trades for more activity
-                const trades = recentTrades.querySelectorAll('.trade-row');
-                if (trades.length > 15) {
-                    trades[trades.length - 1].remove();
-                }
+                askOrders.innerHTML += `<div class="order-row ask"><span>${askPrice.toFixed(6)}</span><span>${size.toFixed(0)}</span><span>${(askPrice * size).toFixed(2)}</span></div>`;
+                bidOrders.innerHTML += `<div class="order-row bid"><span>${bidPrice.toFixed(6)}</span><span>${size.toFixed(0)}</span><span>${(bidPrice * size).toFixed(2)}</span></div>`;
             }
         }
 
-        // Execute trade
         function executeTrade(type) {
             const amountInput = document.getElementById('tradeAmount');
             const amount = parseFloat(amountInput.value);
+            if (!amount) return;
             
-            if (!amount || amount <= 0) {
-                showNotification('error', 'Please enter a valid amount');
-                return;
-            }
-            
-            if (type === 'buy') {
-                const cost = amount;
-                if (cost > tradingState.balance) {
-                    showNotification('error', 'Insufficient balance');
-                    return;
-                }
-                
-                const tokens = cost / tradingState.currentPrice;
-                tradingState.balance -= cost;
-                
-                // Update position
-                if (tradingState.position >= 0) {
-                    tradingState.avgPrice = ((tradingState.position * tradingState.avgPrice) + (tokens * tradingState.currentPrice)) / (tradingState.position + tokens);
-                    tradingState.position += tokens;
-                } else {
-                    // Closing short position
-                    if (tokens >= Math.abs(tradingState.position)) {
-                        const pnl = Math.abs(tradingState.position) * (tradingState.avgPrice - tradingState.currentPrice);
-                        tradingState.totalPnL += pnl;
-                        tradingState.trades.push({ type: 'close_short', pnl: pnl, price: tradingState.currentPrice });
-                        
-                        const remainingTokens = tokens - Math.abs(tradingState.position);
-                        tradingState.position = remainingTokens;
-                        tradingState.avgPrice = tradingState.currentPrice;
-                    } else {
-                        tradingState.position += tokens;
-                    }
-                }
-                
-                showNotification('success', `Successfully bought ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
-                
-            } else if (type === 'sell') {
-                const tokens = amount / tradingState.currentPrice;
-                
-                if (tradingState.position > 0) {
-                    if (tokens > tradingState.position) {
-                        showNotification('error', 'Insufficient position');
-                        return;
-                    }
-                    
-                    const pnl = tokens * (tradingState.currentPrice - tradingState.avgPrice);
-                    tradingState.totalPnL += pnl;
-                    tradingState.balance += amount;
-                    tradingState.position -= tokens;
-                    tradingState.trades.push({ type: 'sell', pnl: pnl, price: tradingState.currentPrice });
-                    
-                    if (tradingState.position === 0) {
-                        tradingState.avgPrice = 0;
-                    }
-                    
-                    showNotification('success', `Successfully sold ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
-                } else {
-                    // Short selling
-                    tradingState.balance += amount;
-                    if (tradingState.position <= 0) {
-                        tradingState.avgPrice = ((Math.abs(tradingState.position) * tradingState.avgPrice) + (tokens * tradingState.currentPrice)) / (Math.abs(tradingState.position) + tokens);
-                        tradingState.position -= tokens;
-                    } else {
-                        const pnl = tradingState.position * (tradingState.currentPrice - tradingState.avgPrice);
-                        tradingState.totalPnL += pnl;
-                        tradingState.trades.push({ type: 'close_long', pnl: pnl, price: tradingState.currentPrice });
-                        
-                        const remainingTokens = tokens - tradingState.position;
-                        tradingState.position = -remainingTokens;
-                        tradingState.avgPrice = tradingState.currentPrice;
-                    }
-                    
-                    showNotification('success', `Successfully shorted ${tokens.toFixed(2)} SOL/PFUN at $${tradingState.currentPrice.toFixed(6)}`);
-                }
-            }
-            
-            // Update trade stats
-            tradingState.openTrades = tradingState.position !== 0 ? 1 : 0;
-            tradingState.totalTrades++;
-            tradingState.winRate = tradingState.trades.length > 0 ? 
-                (tradingState.trades.filter(t => t.pnl > 0).length / tradingState.trades.length) : 0;
-            
+            showNotification('success', `Trade Executed on Trenches Szn!`);
             amountInput.value = '';
-            updateUI();
         }
 
-        // Show notification
         function showNotification(type, message) {
             notification.className = `notification ${type}`;
             notification.querySelector('.notification-body').textContent = message;
-            notification.querySelector('.notification-title').textContent = 
-                type === 'success' ? 'Trade Executed' : 'Trade Failed';
-            
             notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
+            setTimeout(() => notification.classList.remove('show'), 4000);
         }
 
-        // Toggle advanced options
         function toggleOptions() {
             optionsContent.classList.toggle('show');
-            optionsArrow.style.transform = optionsContent.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
         }
 
-        // Set timeframe
-        function setTimeframe(timeframe) {
-            // Update active timeframe button
-            document.querySelectorAll('.timeframe-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // In a real implementation, this would change the chart data
-            console.log(`Timeframe changed to: ${timeframe}`);
-        }
-
-        // Connect wallet
-        async function connectWallet() {
-            if (window.solana && window.solana.isPhantom) {
-                try {
-                    const response = await window.solana.connect();
-                    const publicKey = response.publicKey.toString();
-                    
-                    tradingState.connectedWallet = true;
-                    document.getElementById('connectWalletBtn').textContent = `${publicKey.substring(0, 4)}...${publicKey.substring(publicKey.length - 4)}`;
-                    
-                    showNotification('success', 'Wallet connected successfully');
-                } catch (err) {
-                    showNotification('error', 'Wallet connection failed');
-                    console.error('Wallet connection error:', err);
-                }
-            } else {
-                showNotification('error', 'Phantom wallet not found! Please install it from https://phantom.app/');
-            }
-        }
-
-        // Initialize the app
         function init() {
             updateUI();
             drawChart();
             updateOrderBook();
+            setInterval(rapidPriceTick, 100);
+            setInterval(updatePrice, 1000);
             
-            // Event listeners
-            document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
-            document.getElementById('closeNotification').addEventListener('click', () => {
-                notification.classList.remove('show');
-            });
-            document.getElementById('maxBtn').addEventListener('click', () => {
-                document.getElementById('tradeAmount').value = tradingState.balance.toFixed(2);
-            });
-            document.getElementById('halfBtn').addEventListener('click', () => {
-                document.getElementById('tradeAmount').value = (tradingState.balance / 2).toFixed(2);
-            });
-            
-            // ULTRA FAST UPDATES!
-            setInterval(rapidPriceTick, 100); // Super fast price ticks every 100ms
-            setInterval(updatePrice, 500);    // New candles every 500ms  
-            setInterval(updateOrderBook, 300); // Order book updates every 300ms
-            
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                chartCanvas.width = chartCanvas.offsetWidth;
-                chartCanvas.height = chartCanvas.offsetHeight;
-                drawChart();
+            document.getElementById('connectWalletBtn').addEventListener('click', () => {
+                showNotification('success', 'Wallet Connected');
             });
         }
 
-        // Start the application
         init();
     </script>
 </body>
